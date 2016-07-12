@@ -1,0 +1,9 @@
+<div class="element image" data-id="<%- id %>">
+  <% if(!url){ %>
+    <img src="<%- file %>" data-size="<%- size %>">
+  <% } else { %>
+    <a href="<%- url %>">
+      <img src="<%- file %>" data-size="<%- size %>">
+    </a>
+  <% } %>
+</div>
