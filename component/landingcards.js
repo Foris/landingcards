@@ -47,19 +47,16 @@
     },
     setCard: function($el, card){
       // get card template
-      let cardTmpl = methods.getTemplate('card.html');
+      let cardTmpl = _.template('<div class="card" data-id="<%- id %>"></div>');
 
-      // paint card template
-      cardTmpl.then((res) => {
-        console.info("new card");
-        let card_id = 'card-' + card_index;
-        $el.append( res({id: card_id}) );
-        card_index += 1;
+      console.info("new card");
+      let card_id = 'card-' + card_index;
+      $el.append( cardTmpl({id: card_id}) );
+      card_index += 1;
 
-        // set card elements
-        let elements = _.keys(card);
-        methods.setElements($el, card, elements, card_id);
-      })
+      // set card elements
+      let elements = _.keys(card);
+      methods.setElements($el, card, elements, card_id);
     },
     setElements: function($el, card, elements, card_id){
       // get element template
@@ -151,8 +148,6 @@
       poster.click(function(){
         events.showVideoVimeo($element);
       })
-
-
     },
     showVideoVimeo: function($element){
       let iframe = $element.find('.video-modal iframe')[0];
