@@ -66,14 +66,17 @@
       let $card = $el.find('.card[data-id="' + card_id + '"]');
       let eleTmpl;
 
+      // reset element counter
+      element_index = 0;
+
       for(let value of elements){
+        console.log("elements size: ", _.size(elements) );
         // paint element with id
         let element_id = 'element-' + element_index;
         let elementTmpl = _.template('<div class="element" data-id="<%- id %>"></div>');
         $card.append( elementTmpl({id: element_id }) );
 
         let $element = $card.find('.element[data-id="' + element_id + '"]');
-        console.log("$element: ", $element);
 
         switch(value) {
           case 'img':
@@ -101,7 +104,6 @@
               }
             }).then(() => {
               // start events with this video element
-              // let $element = $card.find('.element[data-id="' + element_id + '"]')
               switch(card[value].origin){
                 case 'vimeo':
                   events.startVideoVimeo($element);
@@ -156,18 +158,14 @@
             break;
         }
         // add 1 to next element in current card
-        element_index =+ 1;
+        console.log("element index: ", element_index);
+        element_index += 1;
       }
-      // reset element counter
-      element_index = 0;
-
-
     },
     getTemplate: function(name){
 
       return new Promise(function(resolve, reject){
           $.get(urlBase + "templates/" + name, function( result ) {
-            console.log(_.template(result))
             resolve(_.template(result));
           }).fail(function() {
             reject('no template')
