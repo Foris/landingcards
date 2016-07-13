@@ -14,6 +14,7 @@
   let api = {
     init : function(options) {
       const $el = $(this);
+      $el.attr('class','landingcards');
       methods.getCards($el, options);
     },
     destroy: function(){
@@ -44,6 +45,8 @@
       cards.forEach(function(card){
         methods.setCard($el, card, options)
       })
+      // reset card count
+      card_index = 0;
     },
     setCard: function($el, card){
       // get card template
@@ -62,20 +65,26 @@
       // get element template
       let $card = $el.find('.card[data-id="' + card_id + '"]');
       let eleTmpl;
-      let element_id = 'element-' + element_index;
 
       for(let value of elements){
+        // paint element with id
+        let element_id = 'element-' + element_index;
+        let elementTmpl = _.template('<div class="element" data-id="<%- id %>"></div>');
+        $card.append( elementTmpl({id: element_id }) );
+
+        let $element = $card.find('.element[data-id="' + element_id + '"]');
+        console.log("$element: ", $element);
+
         switch(value) {
           case 'img':
             eleTmpl = methods.getTemplate('img.html');
             eleTmpl.then((res) => {
               if($card){
-                $card.append( res({
-                  id: element_id,
+                $element.append( res({
                   file: card[value].file,
                   size: card[value].size,
                   url: card[value].url,
-                }) );
+                }) ).addClass('image');
               }
             })
             break;
@@ -83,17 +92,16 @@
             eleTmpl = methods.getTemplate('video.html');
             eleTmpl.then((res) => {
               if($card){
-                $card.append( res({
-                  id: element_id,
+                $element.append( res({
                   origin: card[value].origin,
                   title: card[value].title,
                   file: card[value].file,
                   poster: card[value].poster
-                }) );
+                }) ).addClass('video');
               }
             }).then(() => {
               // start events with this video element
-              let $element = $card.find('.element[data-id="' + element_id + '"]')
+              // let $element = $card.find('.element[data-id="' + element_id + '"]')
               switch(card[value].origin){
                 case 'vimeo':
                   events.startVideoVimeo($element);
@@ -106,15 +114,40 @@
               }
             })
             break;
-          // case 'description':
-          //   eleTmpl = methods.getTemplate('description.html');
-          //   break;
-          // case 'title':
-          //   eleTmpl = methods.getTemplate('title.html');
-          //   break;
-          // case 'accordeon':
-          //   eleTmpl = methods.getTemplate('accordeon.html');
-          //   break;
+          case 'description':
+            eleTmpl = methods.getTemplate('description.html');
+            eleTmpl.then((res) => {
+              if($card){
+                $element.append( res({
+                  type: card[value].type,
+                  text: card[value].text
+                }) ).addClass('description');
+              }
+            })
+            break;
+          case 'title':
+            eleTmpl = methods.getTemplate('title.html');
+            eleTmpl.then((res) => {
+              if($card){
+                $element.append( res({
+                  type: card[value].type,
+                  text: card[value].text
+                }) ).addClass('title');
+              }
+            })
+            break;
+          case 'accordeon':
+            eleTmpl = methods.getTemplate('accordeon.html');
+            eleTmpl.then((res) => {
+              if($card){
+                $element.append( res({
+                  id: element_id,
+                  title: card[value].title,
+                  cards: card[value].cards
+                }) ).addClass('accordeon');
+              }
+            })
+            break;
           // case 'footer':
           //   eleTmpl = methods.getTemplate('footer.html');
           //   break;
@@ -122,16 +155,19 @@
             // console.error('card element not exist please change ' + value + ' by img, video, description, title, accordeon or footer');
             break;
         }
-
-        // console.log("k: ", value);
-        // console.log("k: ", card[value]);
+        // add 1 to next element in current card
+        element_index =+ 1;
       }
+      // reset element counter
+      element_index = 0;
 
-      element_index =+ 1
+
     },
     getTemplate: function(name){
+
       return new Promise(function(resolve, reject){
           $.get(urlBase + "templates/" + name, function( result ) {
+            console.log(_.template(result))
             resolve(_.template(result));
           }).fail(function() {
             reject('no template')
