@@ -486,22 +486,37 @@ body
     {
       .element
       {
-        .logo
+        &.description
         {
-          width: 100%;
-          text-align: center;
-
-          img
+          .main, .paragraph
           {
-            width: 60% !important;
-            padding-left: 0 !important;
+            width: 96% !important;
+            padding: 2% !important;
+            box-sizing: border-box !important;
+            font-size: 18px !important;
           }
         }
 
-        .item
+        &.footer
         {
-          padding: 0 11% !important;
-          padding-top: 20px !important;
+
+          .logo
+          {
+            width: 100%;
+            text-align: center;
+
+            img
+            {
+              width: 60% !important;
+              padding-left: 0 !important;
+            }
+          }
+
+          .item
+          {
+            padding: 0 11% !important;
+            padding-top: 20px !important;
+          }
         }
       }
     }
