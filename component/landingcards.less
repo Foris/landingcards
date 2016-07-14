@@ -226,6 +226,17 @@
   background: linear-gradient(135deg, rgba(81,170,188,1) 0%, rgba(61,119,145,1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#51aabc', endColorstr='#3d7791', GradientType=1 );
 }
+.dg4
+{
+  background: rgba(255,255,255,1);
+  background: -moz-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(178,178,178,1) 100%);
+  background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(100%, rgba(178,178,178,1)));
+  background: -webkit-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(178,178,178,1) 100%);
+  background: -o-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(178,178,178,1) 100%);
+  background: -ms-linear-gradient(-45deg, rgba(255,255,255,1) 0%, rgba(178,178,178,1) 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(178,178,178,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#b2b2b2', GradientType=1 );
+}
 
 body
 {
@@ -241,6 +252,11 @@ body
   {
     display: flex;
     flex-direction: column;
+
+    .hide
+    {
+      display: none;
+    }
 
     .card
     {
@@ -459,14 +475,61 @@ body
           }
 
         }
+
+        // ACCORDEON
+        &.accordeon
+        {
+          padding: 0 !important;
+
+          > .accordeon-title
+          {
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+
+            > h2
+            {
+              font-weight: 300;
+              margin: auto;
+              text-align: center;
+              padding: 15px;
+              color: #37848F;
+              font-size: 18px;
+              .dg4;
+            }
+
+            > .toggle-arrow
+            {
+              cursor: pointer;
+              position: absolute;
+              top: 50%;
+              right: 12px;
+              z-index: 9;
+              display: inline-block;
+              width: 14px;
+              height: 14px;
+              line-height: 14px;
+              background-image: url("img/down_arrow.svg");
+              background-repeat: no-repeat;
+              margin-top: -3px;
+
+              &.close
+              {
+                background-image: url("img/up_arrow.svg") !important;
+
+              }
+            }
+          }
+
+        }
       }
 
       &:nth-child(1){ .col1; }
       &:nth-child(2){ .dg1; }
       &:nth-child(3){ .col1; }
       &:nth-child(4){ .dg2; }
-      &:nth-child(5){ .dg3; }
-      &:nth-child(6){ .col1; }
+      &:nth-child(5){ .col1; }
+      &:nth-child(6){ .dg3; }
 
     }
 

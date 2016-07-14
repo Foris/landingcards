@@ -36,7 +36,7 @@
         cards = response.cards
         methods.initCards($el, options)
       }).catch(function(err) {
-        console.error(err)
+        console.error("Error cargando json: ", err)
       });
     },
     initCards: function($el, options){
@@ -143,10 +143,17 @@
             eleTmpl.then((res) => {
               if($card){
                 $element.append( res({
-                  title: card[value].title,
-                  cards: card[value].cards
+                  title: card[value].title
                 }) ).addClass('accordeon');
               }
+            }).then(() => {
+              // get data cards to show in accordeon
+              let $accobox = $element.find('.accordeon-box .content');
+              $accobox.landingcards({
+                data: card[value].data
+              });
+              // start events with this video element
+              events.startAccordeon($element);
             })
             break;
           case 'footer':
@@ -189,6 +196,16 @@
 
   // Events
   var events = {
+    startAccordeon: function($element){
+      let $title = $element.find('.accordeon-title');
+      let $box = $element.find('.accordeon-box');
+      let $arrow = $title.find('.toggle-arrow');
+      $title.click(function(){
+        $box.toggleClass('hide');
+        // events.changeAccordeonArrow($title, $box);
+        $arrow.toggleClass('close');
+      });
+    },
     startVideoVimeo: function($element){
       let poster = $element.find('.video-poster');
       poster.click(function(){
