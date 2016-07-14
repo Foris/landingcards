@@ -3,6 +3,7 @@
   "use strict"
   var scripts = document.getElementsByTagName("script");
   var urlBase = scripts[scripts.length-1].src;
+  urlBase = urlBase.replace('landingcards_es5.js', '');
   urlBase = urlBase.replace('landingcards.js', '');
 
   // some glocal vars
@@ -29,14 +30,9 @@
     getCards: function($el, options){
       let jsonUri = './' + options.data;
       // get cards data
-      fetch(jsonUri).then(function(response) {
-      	// Convert to JSON
-      	return response.json();
-      }).then(function(response) {
-        cards = response.cards
+      $.getJSON(jsonUri, function(json) {
+        cards = json.cards
         methods.initCards($el, options)
-      }).catch(function(err) {
-        console.error("Error cargando json: ", err)
       });
     },
     initCards: function($el, options){
