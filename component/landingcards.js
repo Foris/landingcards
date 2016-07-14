@@ -143,16 +143,28 @@
             eleTmpl.then((res) => {
               if($card){
                 $element.append( res({
-                  id: element_id,
                   title: card[value].title,
                   cards: card[value].cards
                 }) ).addClass('accordeon');
               }
             })
             break;
-          // case 'footer':
-          //   eleTmpl = methods.getTemplate('footer.html');
-          //   break;
+          case 'footer':
+            eleTmpl = methods.getTemplate('footer.html');
+            eleTmpl.then((res) => {
+              if($card){
+                $element.append( res({
+                  logo: card[value].logo,
+                  address_img: card[value].address_img,
+                  address: card[value].address,
+                  phone_img: card[value].phone_img,
+                  phone: card[value].phone,
+                  email_img: card[value].email_img,
+                  email: card[value].email
+                }) ).addClass('footer');
+              }
+            })
+            break;
           default:
             // console.error('card element not exist please change ' + value + ' by img, video, description, title, accordeon or footer');
             break;

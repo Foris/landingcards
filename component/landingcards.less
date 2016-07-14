@@ -187,6 +187,8 @@
 @gap: 50px;
 
 // colors
+@color2: #AECF44;
+
 .col1
 {
   background-color: #fff;
@@ -230,24 +232,24 @@ body
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
 
   width: 100%;
   height: 100%;
 
   .landingcards
   {
-    width: 100%;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
 
     .card
     {
-      width: 100%;
-      // padding: @gap 0;
 
       .element
       {
         width: 100%;
         padding: @gap 0;
+        position: relative;
 
         // IMAGE
         &.image
@@ -350,7 +352,7 @@ body
          .main
           {
             width: 62%;
-            font-weight: 100;
+            font-weight: 300;
             margin: auto;
             text-align: center;
             font-size: 36px;
@@ -359,12 +361,26 @@ body
 
          .paragraph
           {
-            width: 62%;
-            font-weight: 100;
+            width: 50%;
+            font-weight: 300;
             margin: auto;
             text-align: center;
             font-size: 24px;
             color: #fff;
+            line-height: 32px;
+
+            a
+            {
+              color: @color2;
+              text-decoration: none;
+            }
+
+            .right_arrow_green
+            {
+              width: auto;
+              height: 15px;
+              margin-left: 10px;
+            }
           }
         }
 
@@ -375,7 +391,7 @@ body
 
           > h1
           {
-            font-weight: 100;
+            font-weight: 300;
             margin: auto;
             text-align: center;
             padding: 28px;
@@ -395,6 +411,54 @@ body
             }
           }
         }
+
+        // FOOTER
+        &.footer
+        {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+
+          > .logo
+          {
+            flex-grow: 10;
+            align-self: center;
+
+            > img
+            {
+              width: 200px;
+              padding-left: 50px;
+            }
+          }
+
+          > .item
+          {
+            flex-grow: 1;
+            align-self: center;
+            padding: 0 2%;
+
+            > img
+            {
+              float: left;
+              margin-top: 11px;
+              margin-right: 3px;
+            }
+
+            > p
+            {
+              float: left;
+              font-weight: 100;
+              font-size: 14px;
+
+              > a
+              {
+                text-decoration: none;
+                color: inherit;
+              }
+            }
+          }
+
+        }
       }
 
       &:nth-child(1){ .col1; }
@@ -408,4 +472,38 @@ body
 
   }
 
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////
+///////////////////  RESPONSIVE CSS ////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+@media only screen and (max-width: 800px){
+  .landingcards
+  {
+    .card
+    {
+      .element
+      {
+        .logo
+        {
+          width: 100%;
+          text-align: center;
+
+          img
+          {
+            width: 60% !important;
+            padding-left: 0 !important;
+          }
+        }
+
+        .item
+        {
+          padding: 0 11% !important;
+          padding-top: 20px !important;
+        }
+      }
+    }
+  }
 }
