@@ -188,6 +188,7 @@
 
 // colors
 @color2: #AECF44;
+@color3: #37848F;
 
 .col1
 {
@@ -524,7 +525,14 @@ body
         }
       }
 
-      &:nth-child(1){ .col1; }
+
+      &:nth-child(1){
+        .col1;
+        h1, h2, p, div
+        {
+          color: @color3 !important;
+        }
+      }
       &:nth-child(2){ .dg1; }
       &:nth-child(3){ .col1; }
       &:nth-child(4){ .dg2; }

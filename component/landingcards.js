@@ -37,7 +37,6 @@
     },
     initCards: function($el, options){
       // get card elements
-      console.log("cards: ", cards);
       cards.forEach(function(card){
         methods.setCard($el, card, options)
       })
@@ -66,7 +65,6 @@
       element_index = 0;
 
       for(let value of elements){
-        console.log("elements size: ", _.size(elements) );
         // paint element with id
         let element_id = 'element-' + element_index;
         let elementTmpl = _.template('<div class="element" data-id="<%- id %>"></div>');
@@ -105,7 +103,7 @@
                   events.startVideoVimeo($element);
                   break;
                 case 'youtube':
-                  console.log("TODO: support youtube video");
+                  console.info("TODO: support youtube video");
                   break;
                 default:
                   console.error("specified video origin - local, vimeo or youtube");
@@ -166,19 +164,25 @@
                   email: card[value].email
                 }) ).addClass('footer');
               }
-            })
+            });
+            break;
+          case 'mockup':
+            $element.mockups({
+              type: card[value].type,
+              img: card[value].file,
+              adjust: false,
+              reflection: true
+            });
             break;
           default:
             // console.error('card element not exist please change ' + value + ' by img, video, description, title, accordeon or footer');
             break;
         }
         // add 1 to next element in current card
-        console.log("element index: ", element_index);
         element_index += 1;
       }
     },
     getTemplate: function(name){
-
       return new Promise(function(resolve, reject){
           $.get(urlBase + "templates/" + name, function( result ) {
             resolve(_.template(result));
@@ -217,7 +221,6 @@
 
       // play video
       player.api('play')
-      console.log("player: ", player);
 
       let back = $element.find('.back');
       back.click(function(){
