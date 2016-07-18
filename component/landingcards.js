@@ -167,7 +167,9 @@
             });
             break;
           case 'mockup':
-            $element.mockups({
+            $element.append('<div class="mockups_container"></div>');
+            let $container = $element.find('.mockups_container');
+            $container.mockups({
               type: card[value].type,
               img: card[value].file,
               adjust: false,
@@ -180,7 +182,43 @@
         }
         // add 1 to next element in current card
         element_index += 1;
+
+        // evaluate card template considering the type and order of elements that has
+        methods.cardTemplateRules(card, $card, elements);
       }
+
+    },
+    cardTemplateRules: function(card, $card, elements){
+      console.log(elements);
+      let elementsArray = elements.toString();
+      console.log("elementsArray: ", elementsArray);
+      switch(elementsArray) {
+        case "img":
+          $card.attr('data-tmpl', 'image-main');
+          break;
+        case "video":
+          $card.attr('data-tmpl', 'video-main');
+          break;
+        case "description":
+          $card.attr('data-tmpl', 'description-main');
+          break;
+        case "title":
+          $card.attr('data-tmpl', 'title-news');
+          break;
+        case "accordeon":
+          $card.attr('data-tmpl', 'accordeon-main');
+          break;
+        case "title,description,mockup":
+          $card.attr('data-tmpl', 'title-description-mockup');
+          break;
+        case "img,title,description":
+          $card.attr('data-tmpl', 'img-title-description');
+          break;
+        case "footer":
+          $card.attr('data-tmpl', 'footer');
+          break;
+      }
+      console.log($card);
     },
     getTemplate: function(name){
       return new Promise(function(resolve, reject){
