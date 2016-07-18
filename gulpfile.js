@@ -9,7 +9,7 @@ var gulp = require('gulp'),
 
 // Minify Custom JS: Run manually with: "gulp build-js"
 gulp.task('build-js', function() {
-  return gulp.src('component/*.js')
+  return gulp.src(['component/landingcards.js'])
     .pipe(babel({
       presets: ['es2015']
     }))
