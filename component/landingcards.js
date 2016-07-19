@@ -276,20 +276,13 @@
   var events = {
     startTopnav: function($element, card){
       let type = card['topnav'].type;
+      let legend = card['topnav'].legend;
+      let url = card['topnav'].url;
       switch(type){
         case 'prev':
-          // get previous page info
-          let referrer = document.referrer;
-          var xhr = new XMLHttpRequest();
-          xhr.onload = function() {
-            // get previous title
-            let prev_title = (/<title>(.*?)<\/title>/m).exec(xhr.responseText)[1]
-            // put prev title into topnav and link
-            $element.find('.legend_left').html(prev_title);
-            $element.find('a').attr('href', referrer);
-          };
-          xhr.open('GET', referrer + '?referrer=' + document.referrer, true);
-          xhr.send();
+          // put prev title into topnav and link
+          $element.find('.legend_left').html(legend);
+          $element.find('a').attr('href', url);
           break;
         default:
           console.error('type not support!')
