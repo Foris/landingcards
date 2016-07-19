@@ -93,7 +93,8 @@
                   origin: card[value].origin,
                   title: card[value].title,
                   file: card[value].file,
-                  poster: card[value].poster
+                  poster: card[value].poster,
+                  poster_mobile: card[value].poster_mobile
                 }) ).addClass('video');
               }
             }).then(() => {
