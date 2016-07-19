@@ -73,6 +73,19 @@
         let $element = $card.find('.element[data-id="' + element_id + '"]');
 
         switch(value) {
+          case 'topnav':
+            eleTmpl = methods.getTemplate('topnav.html');
+            eleTmpl.then((res) => {
+              if($card){
+                $element.append( res({
+                  type: card[value].type,
+                  urlBase: urlBase
+                }) ).addClass('topnav');
+              }
+            }).then(() => {
+              events.startTopnav($element, card);
+            })
+            break;
           case 'img':
             eleTmpl = methods.getTemplate('img.html');
             eleTmpl.then((res) => {
@@ -190,7 +203,6 @@
 
     },
     cardTemplateRules: function(card, $card, elements){
-      console.log(elements);
       let elementsArray = elements.toString();
       console.log("elementsArray: ", elementsArray);
       switch(elementsArray) {
@@ -219,7 +231,6 @@
           $card.attr('data-tmpl', 'footer');
           break;
       }
-      console.log($card);
     },
     getTemplate: function(name){
       return new Promise(function(resolve, reject){
@@ -235,6 +246,28 @@
 
   // Events
   var events = {
+    startTopnav: function($element, card){
+      let type = card['topnav'].type;
+      switch(type){
+        case 'prev':
+          // get previous page info
+          let referrer = document.referrer;
+          var xhr = new XMLHttpRequest();
+          xhr.onload = function() {
+            // get previous title
+            let prev_title = (/<title>(.*?)<\/title>/m).exec(xhr.responseText)[1]
+            // put prev title into topnav and link
+            $element.find('.legend_left').html(prev_title);
+            $element.find('a').attr('href', referrer);
+          };
+          xhr.open('GET', referrer + '?referrer=' + document.referrer, true);
+          xhr.send();
+          break;
+        default:
+          console.error('type not support!')
+          break;
+      }
+    },
     startAccordeon: function($element){
       let $title = $element.find('.accordeon-title');
       let $box = $element.find('.accordeon-box');

@@ -180,6 +180,13 @@
   .translate(-50%, -50%);
 }
 
+.centerVertical
+{
+  position: absolute;
+  top: 50%;
+
+  .translate(0, -50%);
+}
 ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////  INICIO CSS ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -269,12 +276,37 @@ body
         width: 100%;
         position: relative;
 
-        // gap
-        &.gap
+        // topnav
+        &.topnav
         {
           width: 100%;
-          height: @gap;
+          height: @gap * 1.5;
           display: block;
+          padding: 10px;
+          background-color: #fff;
+
+          a
+          {
+            margin-left: 1%;
+            text-decoration: none;
+            display: block;
+            .centerVertical;
+
+            img
+            {
+              float: left;
+              width: 13px;
+            }
+
+            .legend_left
+            {
+              float: left;
+              margin-left: 15px;
+              font-size: 28px;
+              margin-top: -4px;
+              font-weight: 300;
+            }
+          }
         }
 
         // IMAGE
@@ -566,11 +598,8 @@ body
       }
       &:nth-child(6){ .dg3; }
 
-
     }
-
   }
-
 }
 
 [data-tmpl="image-main"]
@@ -670,6 +699,27 @@ body
     {
       .element
       {
+
+        &.topnav
+        {
+          height: @gap !important;
+
+          a
+          {
+
+            img
+            {
+              width: 12px !important;
+            }
+
+            .legend_left
+            {
+              font-size: 27px !important;
+              margin-top: -5px !important;
+            }
+          }
+        }
+
         &.title
         {
 
