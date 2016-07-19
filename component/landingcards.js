@@ -77,7 +77,11 @@
 
         switch(value) {
           case 'background':
-            $card.css({"background":"url(" + card[value].file + ") no-repeat center center fixed"});
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ){
+              $card.css({"background":"url(" + card[value].file_mobile + ") no-repeat center center fixed"});
+            }else{
+              $card.css({"background":"url(" + card[value].file + ") no-repeat center center fixed"});
+            }
             $card.css({"-webkit-background-size":"cover"});
             $card.css({"-moz-background-size":"cover"});
             $card.css({"-o-background-size":"cover"});
@@ -240,6 +244,9 @@
           break;
         case "img,title,description,background":
           $card.attr('data-tmpl', 'img-title-description-background');
+          break;
+        case "title,description":
+          $card.attr('data-tmpl', 'title-description');
           break;
         case "footer":
           $card.attr('data-tmpl', 'footer');
