@@ -8,6 +8,7 @@
 
   // some glocal vars
   let cards;
+  let settings;
   let card_index = 0;
   let element_index = 0;
 
@@ -32,7 +33,9 @@
       // get cards data
       $.getJSON(jsonUri, function(json) {
         cards = json.cards
+        settings = json.settings
         methods.initCards($el, options)
+        methods.settings($el, options)
       });
     },
     initCards: function($el, options){
@@ -73,6 +76,14 @@
         let $element = $card.find('.element[data-id="' + element_id + '"]');
 
         switch(value) {
+          case 'background':
+            $card.css({"background":"url(" + card[value].file + ") no-repeat center center fixed"});
+            $card.css({"-webkit-background-size":"cover"});
+            $card.css({"-moz-background-size":"cover"});
+            $card.css({"-o-background-size":"cover"});
+            $card.css({"background-size":"cover"});
+            $element.remove();
+            break;
           case 'topnav':
             eleTmpl = methods.getTemplate('topnav.html');
             eleTmpl.then((res) => {
@@ -227,10 +238,20 @@
         case "img,title,description":
           $card.attr('data-tmpl', 'img-title-description');
           break;
+        case "img,title,description,background":
+          $card.attr('data-tmpl', 'img-title-description-background');
+          break;
         case "footer":
           $card.attr('data-tmpl', 'footer');
           break;
       }
+    },
+    settings: function($el, options){
+      methods.cardsTemplate($el);
+    },
+    cardsTemplate: function($el){
+      console.log("settings: ", settings);
+      $el.attr('data-template', settings.template)
     },
     getTemplate: function(name){
       return new Promise(function(resolve, reject){
