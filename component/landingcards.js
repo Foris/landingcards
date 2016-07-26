@@ -37,6 +37,7 @@
         methods.initCards($el, options)
         methods.settings($el, options)
       });
+
     },
     initCards: function($el, options){
       // get card elements
@@ -76,6 +77,32 @@
         let $element = $card.find('.element[data-id="' + element_id + '"]');
 
         switch(value) {
+          case "form":
+            console.log("form!");
+            break;
+          case 'slide':
+            eleTmpl = methods.getTemplate('slide.html');
+            eleTmpl.then((res) => {
+              if($card){
+                $element.append( res({
+                  hideNav: card[value].hideNav,
+                  direction: card[value].direction,
+                  urlBase: urlBase
+                }) ).addClass('slide');
+              }
+            }).then(() => {
+              console.log("card[value].data: ", card[value].data);
+              // get data cards to show in slide
+              let $slidebox = $element.find('.slide_box .content');
+
+              $slidebox.landingcards({
+                data: card[value].data
+              });
+
+              // start slide events
+              events.startSlide($element, card);
+            })
+            break;
           case 'background':
             if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ){
               $card.css({"background":"url(" + card[value].file_mobile + ") no-repeat center center fixed"});
@@ -206,7 +233,7 @@
             });
             break;
           default:
-            // console.error('card element not exist please change ' + value + ' by img, video, description, title, accordeon or footer');
+            console.error('card element not exist please change ' + value + ' by img, video, description, title, accordeon or footer');
             break;
         }
         // add 1 to next element in current card
@@ -219,7 +246,6 @@
     },
     cardTemplateRules: function(card, $card, elements){
       let elementsArray = elements.toString();
-      console.log("elementsArray: ", elementsArray);
       switch(elementsArray) {
         case "img":
           $card.attr('data-tmpl', 'image-main');
@@ -257,7 +283,6 @@
       methods.cardsTemplate($el);
     },
     cardsTemplate: function($el){
-      console.log("settings: ", settings);
       $el.attr('data-template', settings.template)
     },
     getTemplate: function(name){
@@ -265,7 +290,7 @@
           $.get(urlBase + "templates/" + name, function( result ) {
             resolve(_.template(result));
           }).fail(function() {
-            reject('no template')
+            reject('no template');
           });
         }
       );
@@ -273,7 +298,63 @@
   }
 
   // Events
-  var events = {
+  let events = {
+    startSlide: function($element, card){
+      let data = card["slide"].data;
+      let current = 0;
+      let $nextBtn = $element.find('.next');
+      let $prevBtn = $element.find('.prev');
+
+      $prevBtn.click(function(){
+        events.slidePrev($element, current, card)
+        current -= 1;
+      });
+      $nextBtn.click(function(){
+        events.slideNext($element, current, card)
+        current += 1;
+      });
+    },
+    slidePrev: function($element, current, card){
+      $element.find('.card').fadeOut();
+      $element.find('[data-id="card-' + parseInt(current - 1) + '"]').fadeIn();
+      events.checkNav($element, current-1, card);
+    },
+    slideNext: function($element, current, card){
+      $element.find('.card').fadeOut();
+      $element.find('[data-id="card-' + parseInt(current + 1) + '"]').fadeIn();
+      events.checkNav($element, current+1, card);
+    },
+    checkNav: function($element, current, card){
+      let hideNav = card["slide"].hideNav;
+      let $nextBtn = $element.find('.next');
+      let $prevBtn = $element.find('.prev');
+      let totalCards = parseInt( $element.find('.card').size() - 1 );
+
+      console.log("current: ", current);
+
+      console.log("hideNav: ", hideNav);
+
+      if(current == 0){
+        $prevBtn.addClass('hide');
+        if(!hideNav){
+          $nextBtn.addClass('hide');
+          $nextBtn.removeClass('hide');
+        }else{
+          $nextBtn.addClass('hide');
+        }
+      }else if(current == totalCards){
+        $prevBtn.removeClass('hide');
+        $nextBtn.addClass('hide');
+      }else{
+        $prevBtn.removeClass('hide');
+        if(!hideNav){
+          $nextBtn.removeClass('hide');
+        }else{
+          $nextBtn.addClass('hide');
+        }
+      }
+      console.log("totalCards: ", totalCards);
+    },
     startTopnav: function($element, card){
       let type = card['topnav'].type;
       let legend = card['topnav'].legend;
@@ -306,20 +387,26 @@
       })
     },
     showVideoVimeo: function($element){
-      let iframe = $element.find('.video-modal iframe')[0];
-      let player = $f(iframe);
+      let iframe = $element.find('.video-modal iframe');
+      let player = new Vimeo.Player(iframe);
 
-      // show modal
-      $element.find('.video-modal').show();
+      player.ready().then(function(){
 
-      // play video
-      player.api('play')
+        // show modal
+        $element.find('.video-modal').show();
 
-      let back = $element.find('.back');
-      back.click(function(){
-        $element.find('.video-modal').hide();
-        player.api('pause')
+        // play video
+        player.play();
+
+        let back = $element.find('.back');
+        back.click(function(){
+          $element.find('.video-modal').hide();
+          player.pause()
+        })
+
       })
+
+
 
     }
   };

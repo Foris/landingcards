@@ -260,6 +260,35 @@
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#51aabc', endColorstr='#5c9a5c', GradientType=1 );
 }
 
+button
+{
+  &.b1
+  {
+    cursor: pointer;
+    color: #37848f;
+    font-size: 16px;
+    padding: 8px 16px;
+    border: 1px solid #37848f;
+    background: none;
+    border-radius: 11px;
+    margin: 8px;
+    font-weight: 100;
+
+    &:hover
+    {
+      color: #fff;
+      background: #37848f;
+      .animacion(.5s);
+
+    }
+
+    &:focus
+    {
+      outline:none;
+    }
+  }
+}
+
 body
 {
   font-family: 'Roboto', sans-serif;
@@ -292,6 +321,65 @@ body
       {
         width: 100%;
         position: relative;
+
+        // SLIDE
+        &.slide
+        {
+          width: 100%;
+          min-height: @gap * 1.5;
+
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          background-color: #fff;
+
+
+          > .slide_prev
+          {
+            flex-grow: 1;
+            position: relative;
+
+            > img
+            {
+              cursor: pointer;
+              width: 20px;
+              .center;
+            }
+
+          }
+          > .slide_box
+          {
+            flex-grow: 8;
+            max-width: 80%;
+
+            > .landingcards
+            {
+
+              > .card
+              {
+                display: none;
+
+                &:first-child
+                {
+                  display: block;
+                }
+              }
+
+            }
+          }
+          > .slide_next
+          {
+            flex-grow: 1;
+            position: relative;
+
+            > img
+            {
+              cursor: pointer;
+              width: 20px;
+              .center;
+            }
+          }
+        }
 
         // topnav
         &.topnav
