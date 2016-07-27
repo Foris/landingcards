@@ -78,7 +78,18 @@
 
         switch(value) {
           case "form":
-            console.log("form!");
+            eleTmpl = methods.getTemplate('form_inputs.html');
+            let action = card.settings.action;
+            $element.append('<form action="' + action + '"></form>')
+            card[value].forEach(function(field){
+              eleTmpl.then((res) => {
+                $element.find('form').append( res({
+                  type: field.type,
+                  name: field.name
+                }) );
+                $element.addClass('form');
+              })
+            })
             break;
           case 'slide':
             eleTmpl = methods.getTemplate('slide.html');
@@ -320,8 +331,8 @@
       events.checkNav($element, current-1, card);
     },
     slideNext: function($element, current, card){
-      $element.find('.card').fadeOut();
-      $element.find('[data-id="card-' + parseInt(current + 1) + '"]').fadeIn();
+      $element.find('.card').fadeOut(600);
+      $element.find('[data-id="card-' + parseInt(current + 1) + '"]').delay(800).fadeIn();
       events.checkNav($element, current+1, card);
     },
     checkNav: function($element, current, card){
@@ -329,10 +340,6 @@
       let $nextBtn = $element.find('.next');
       let $prevBtn = $element.find('.prev');
       let totalCards = parseInt( $element.find('.card').size() - 1 );
-
-      console.log("current: ", current);
-
-      console.log("hideNav: ", hideNav);
 
       if(current == 0){
         $prevBtn.addClass('hide');
@@ -353,7 +360,6 @@
           $nextBtn.addClass('hide');
         }
       }
-      console.log("totalCards: ", totalCards);
     },
     startTopnav: function($element, card){
       let type = card['topnav'].type;
