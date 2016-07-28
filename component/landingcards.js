@@ -88,7 +88,8 @@
                 $element.find('form').append( res({
                   type: field.type,
                   name: field.name,
-                  text: field.text
+                  text: field.text,
+                  required: field.required
                 }) );
                 $element.addClass('form');
               }).then(() => {
@@ -320,7 +321,6 @@
         // get user data
         let data_obj = {};
         let $form_inputs = $form.find('input');
-        console.log("$form_inputs: ", $form_inputs);
         $form_inputs.each(function(){
           let $item = $(this);
           let item_type = $item.attr("type");
@@ -329,6 +329,7 @@
 
           if(item_type != "submit"){
             data_obj[item_name] = item_val;
+            console.log("data_obj: ", data_obj);
           }
         })
         resolve(data_obj);
@@ -345,26 +346,32 @@
 
       switch(type){
         case "php":
-          let $submit = $form.find('[type="submit"]');
-          $submit.click(function(event){
-            // get user data
-            let get_data = methods.getFormData($form);
-            get_data.then((data) => {
-              // play action with data
-              $.ajax({
-                data: data,
-                type: "POST",
-                // dataType: "json",
-                url: action,
-              }).done(function( data, textStatus, jqXHR ) {
-                 // click slide next
-                 $(event.target).closest(".slide").find(".next").click()
-              }).fail(function( jqXHR, textStatus, errorThrown ) {
-                 if ( console && console.log ) {
-                     console.log( "La solicitud a fallado: " +  textStatus);
-                 }
-              });
-            })
+          // let $submit = $form.find('[type="submit"]');
+          $form.click(function(event){
+            console.log("ok?: ", this.checkValidity());
+            if(this.checkValidity()){
+              event.preventDefault();
+              // get user data
+              let get_data = methods.getFormData($form);
+              get_data.then((data) => {
+                // play action with data
+                $.ajax({
+                  data: data,
+                  type: "POST",
+                  dataType: "html",
+                  url: action,
+                }).done(function( data, textStatus, jqXHR ) {
+                  console.log("data: ", data);
+                  // click slide next
+                  $(event.target).closest(".slide").find(".next").click()
+                }).fail(function( jqXHR, textStatus, errorThrown ) {
+                  if ( console && console.log ) {
+                    console.log( "La solicitud a fallado: " +  textStatus);
+                  }
+                });
+              })
+            }
+
           });
           break;
         default:
