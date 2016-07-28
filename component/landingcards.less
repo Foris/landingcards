@@ -308,6 +308,7 @@ body
   {
     display: flex;
     flex-direction: column;
+    width: 100%;
 
     .hide
     {
@@ -316,6 +317,10 @@ body
 
     .card
     {
+
+      // -webkit-transition: height 0.8s;
+      // -moz-transition: height 0.8s;
+      // transition: height 0.8s;
 
       .element
       {
@@ -333,7 +338,7 @@ body
           form
           {
             width: 100%;
-            padding: @gap * 1.5;
+            padding: @gap * 1.5 @gap;
 
             > div
             {
@@ -444,6 +449,10 @@ body
           {
             flex-grow: 8;
             max-width: 80%;
+            min-height: 400px;
+            align-items: center;
+            display: flex;
+            justify-content: center;
 
             > .landingcards
             {
@@ -770,6 +779,20 @@ body
     }
   }
 
+  [data-template="nude"]
+  {
+    > .card
+    {
+      background: none;
+
+      h1, .paragraph
+      {
+        color: #37848C !important;
+      }
+
+    }
+  }
+
   [data-template="alfacard"]
   {
     > .card
@@ -990,6 +1013,19 @@ body
       .element
       {
 
+
+        &.form
+        {
+          padding: @gap * 1.5 @gap * .8 !important;
+
+
+          form
+          {
+            padding: @gap * 1.5 0 !important;
+          }
+        }
+
+
         &.topnav
         {
           height: @gap !important;
@@ -1108,6 +1144,8 @@ body
       display: flex;
     }
   }
+
+
 
   body .landingcards .card .element.description .paragraph .right_arrow_green
   {

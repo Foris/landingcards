@@ -11,6 +11,7 @@
   let settings;
   let card_index = 0;
   let element_index = 0;
+  let form_index = 0;
 
   // Public methods
   let api = {
@@ -80,16 +81,23 @@
           case "form":
             eleTmpl = methods.getTemplate('form_inputs.html');
             let action = card.settings.action;
-            $element.append('<form action="' + action + '"></form>')
+            let form_name = 'form_' + form_index;
+            $element.append('<form name="' + form_name + '" action="#"></form>')
             card[value].forEach(function(field){
               eleTmpl.then((res) => {
                 $element.find('form').append( res({
                   type: field.type,
-                  name: field.name
+                  name: field.name,
+                  text: field.text
                 }) );
                 $element.addClass('form');
+              }).then(() => {
+                if(field.type == "submit"){
+                  events.startForm(form_name, card.settings);
+                }
               })
             })
+            form_index += 1;
             break;
           case 'slide':
             eleTmpl = methods.getTemplate('slide.html');
@@ -305,11 +313,65 @@
           });
         }
       );
+    },
+    getFormData: function($form){
+      return new Promise(function(resolve, reject){
+
+        // get user data
+        let data_obj = {};
+        let $form_inputs = $form.find('input');
+        console.log("$form_inputs: ", $form_inputs);
+        $form_inputs.each(function(){
+          let $item = $(this);
+          let item_type = $item.attr("type");
+          let item_name = $item.attr("name");
+          let item_val = $item.val();
+
+          if(item_type != "submit"){
+            data_obj[item_name] = item_val;
+          }
+        })
+        resolve(data_obj);
+      })
     }
   }
 
   // Events
   let events = {
+    startForm: function(form_name, settings){
+      let $form = $('[name="' + form_name + '"]');
+      let type = settings.type;
+      let action = settings.action;
+
+      switch(type){
+        case "php":
+          let $submit = $form.find('[type="submit"]');
+          $submit.click(function(event){
+            // get user data
+            let get_data = methods.getFormData($form);
+            get_data.then((data) => {
+              // play action with data
+              $.ajax({
+                data: data,
+                type: "POST",
+                // dataType: "json",
+                url: action,
+              }).done(function( data, textStatus, jqXHR ) {
+                 // click slide next
+                 $(event.target).closest(".slide").find(".next").click()
+              }).fail(function( jqXHR, textStatus, errorThrown ) {
+                 if ( console && console.log ) {
+                     console.log( "La solicitud a fallado: " +  textStatus);
+                 }
+              });
+            })
+          });
+          break;
+        default:
+          console.error("the " + type + " type is not supported yet.");
+          break;
+      }
+    },
     startSlide: function($element, card){
       let data = card["slide"].data;
       let current = 0;
@@ -317,17 +379,17 @@
       let $prevBtn = $element.find('.prev');
 
       $prevBtn.click(function(){
-        events.slidePrev($element, current, card)
+        events.slidePrev($element, current, card);
         current -= 1;
       });
       $nextBtn.click(function(){
-        events.slideNext($element, current, card)
+        events.slideNext($element, current, card);
         current += 1;
       });
     },
     slidePrev: function($element, current, card){
-      $element.find('.card').fadeOut();
-      $element.find('[data-id="card-' + parseInt(current - 1) + '"]').fadeIn();
+      $element.find('.card').fadeOut(600);
+      $element.find('[data-id="card-' + parseInt(current - 1) + '"]').delay(800).fadeIn();
       events.checkNav($element, current-1, card);
     },
     slideNext: function($element, current, card){
