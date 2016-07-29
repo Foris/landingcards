@@ -2,5 +2,8 @@
   <input type="<%- type %>" value="<%- name %>"></input>
 <% }else{ %>
   <div class="name"><%- text %></div>
-  <input type="<%- type %>" name="<%- name %>" pattern=".{3,}" <% if(required) { %> required <% } %></input>
+  <div style="position:relative;">
+    <input type="<%- type %>" name="<%- name %>"></input>
+  </div>
+
 <% } %>

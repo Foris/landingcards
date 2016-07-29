@@ -348,13 +348,22 @@ body
               padding: 8px 0;
               font-weight: 300;
               text-transform: capitalize;
-              margin-top: 8px;
+              // margin-top: 8px;
 
               &:first-child
               {
                 margin-top: 0px !important;
               }
+
+              > div
+              {
+                margin-top: 0px !important;
+                padding: 8px 0;
+
+              }
+
             }
+
 
             input
             {
@@ -428,7 +437,6 @@ body
 
           display: flex;
           flex-direction: row;
-          flex-wrap: wrap;
           background-color: #fff;
 
 
@@ -776,6 +784,37 @@ body
           margin: auto;
         }
       }
+
+      .input_tooltip
+      {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        height: 100%;
+        padding: 0 !important;
+        align-items: center;
+
+        .message
+        {
+          flex-grow: 4;
+          padding: 8px;
+          background: #ff8d00;
+          color: #fff;
+          font-weight: 400;
+        }
+
+        .close
+        {
+          flex-grow: 1;
+          padding: 8px;
+          background: #d67d0f;
+          color: #fff;
+          font-weight: 400;
+          cursor: pointer;
+        }
+      }
+
     }
   }
 

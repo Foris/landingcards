@@ -347,37 +347,62 @@
       switch(type){
         case "php":
           // let $submit = $form.find('[type="submit"]');
-          $form.click(function(event){
-            console.log("ok?: ", this.checkValidity());
-            if(this.checkValidity()){
-              event.preventDefault();
-              // get user data
-              let get_data = methods.getFormData($form);
-              get_data.then((data) => {
-                // play action with data
-                $.ajax({
-                  data: data,
-                  type: "POST",
-                  dataType: "html",
-                  url: action,
-                }).done(function( data, textStatus, jqXHR ) {
-                  console.log("data: ", data);
+          $form.submit(function(event){
+            event.preventDefault();
+            // get user data
+            let get_data = methods.getFormData($form);
+            get_data.then((data) => {
+              // play action with data
+              $.ajax({
+                data: data,
+                type: "POST",
+                dataType: "json",
+                url: action,
+              }).done(function( result, textStatus, jqXHR ) {
+                if(result){
+                  result.forEach(function(item){
+                    switch(item.type){
+                      case "error":
+                        let item_name = item.name;
+                        let item_value = item.value;
+                        events.inputTooltip($form, item_name, item_value);
+                        break;
+                      default:
+                        console.error(item.type + ' is not supported, Please add in form elements.')
+                        break;
+                    }
+                  })
+                }else{
                   // click slide next
                   $(event.target).closest(".slide").find(".next").click()
-                }).fail(function( jqXHR, textStatus, errorThrown ) {
-                  if ( console && console.log ) {
-                    console.log( "La solicitud a fallado: " +  textStatus);
-                  }
-                });
-              })
-            }
-
+                }
+              }).fail(function( jqXHR, textStatus, errorThrown ) {
+                if ( console && console.log ) {
+                  console.log( "La solicitud a fallado: " +  textStatus);
+                }
+              });
+            });
           });
           break;
         default:
           console.error("the " + type + " type is not supported yet.");
           break;
       }
+    },
+    inputTooltip: function($form, item_name, item_value){
+      let $input_name = $form.find('[name="' + item_name + '"]');
+      $input_name.after('<div class="input_tooltip"><div class="message">' + item_value + '</div><div class="close">x</div></div>');
+      events.startInputTooltip($input_name);
+    },
+    startInputTooltip: function($input_name){
+      $input_name.on({
+        focus: function(event){
+          $(this).parent().find('.close').click();
+        }
+      });
+      $input_name.parent().find('.input_tooltip .close').click(function(event){
+        $(this).parent().remove();
+      });
     },
     startSlide: function($element, card){
       let data = card["slide"].data;
