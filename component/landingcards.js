@@ -334,6 +334,55 @@
         })
         resolve(data_obj);
       })
+    },
+    validateForm: function($form, data, validate){
+      return new Promise(function(resolve, reject){
+        $.ajax({
+          data: data,
+          type: "POST",
+          dataType: "json",
+          url: validate,
+        }).done(function( result, textStatus, jqXHR ) {
+          if(result){
+            result.forEach(function(item){
+              switch(item.type){
+                case "error":
+                  let item_name = item.name;
+                  let item_value = item.value;
+                  events.inputTooltip($form, item_name, item_value);
+                  break;
+                case "success":
+                  resolve();
+                  break;
+                default:
+                  console.error(item.type + ' is not supported, Please add in form elements.')
+                  break;
+              }
+            })
+          }
+        }).fail(function( jqXHR, textStatus, errorThrown ) {
+          if ( console && console.log ) {
+            console.log( "La solicitud a fallado: " +  textStatus);
+            console.log( "jqXHR: " +  errorThrown);
+          }
+        });
+      })
+
+    },
+    actionForm: function($form, data, action, type){
+      return new Promise(function(resolve, reject){
+        $.ajax({
+          data: data,
+          type: "POST",
+          dataType: "html",
+          url: action,
+        }).done(function( result, textStatus, jqXHR ) {
+          resolve(result);
+        }).fail(function( jqXHR, textStatus, errorThrown ) {
+          reject(textStatus);
+        });
+      })
+
     }
   }
 
@@ -342,6 +391,7 @@
     startForm: function(form_name, settings){
       let $form = $('[name="' + form_name + '"]');
       let type = settings.type;
+      let validate = settings.validate;
       let action = settings.action;
 
       switch(type){
@@ -352,40 +402,31 @@
             // get user data
             let get_data = methods.getFormData($form);
             get_data.then((data) => {
-              // play action with data
-              $.ajax({
-                data: data,
-                type: "POST",
-                dataType: "json",
-                url: action,
-              }).done(function( result, textStatus, jqXHR ) {
-                if(result){
-                  result.forEach(function(item){
-                    switch(item.type){
-                      case "error":
-                        let item_name = item.name;
-                        let item_value = item.value;
-                        events.inputTooltip($form, item_name, item_value);
-                        break;
-                      default:
-                        console.error(item.type + ' is not supported, Please add in form elements.')
-                        break;
-                    }
+
+              // has validate rules?
+              if(validate){
+                // validate with json ajax
+                let valid = methods.validateForm($form, data, validate);
+                valid.then(() => {
+                  // performs the action
+                  let act = methods.actionForm($form, data, action, 'post');
+                  act.then((result) => {
+                    // next slide
+                    $(event.target).closest(".slide").find(".next").click()
                   })
-                }else{
-                  // click slide next
+                });
+              }else{
+                // no validate, just performs the action
+                let act = methods.actionForm($form, data, action, 'post');
+                act.then((result) => {
                   $(event.target).closest(".slide").find(".next").click()
-                }
-              }).fail(function( jqXHR, textStatus, errorThrown ) {
-                if ( console && console.log ) {
-                  console.log( "La solicitud a fallado: " +  textStatus);
-                }
-              });
+                })
+              }
             });
           });
           break;
         default:
-          console.error("the " + type + " type is not supported yet.");
+          console.error("the " + type + " type form is not supported yet.");
           break;
       }
     },
