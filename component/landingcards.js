@@ -111,7 +111,6 @@
                 }) ).addClass('slide');
               }
             }).then(() => {
-              console.log("card[value].data: ", card[value].data);
               // get data cards to show in slide
               let $slidebox = $element.find('.slide_box .content');
 
@@ -329,7 +328,6 @@
 
           if(item_type != "submit"){
             data_obj[item_name] = item_val;
-            console.log("data_obj: ", data_obj);
           }
         })
         resolve(data_obj);
@@ -342,6 +340,9 @@
           type: "POST",
           dataType: "json",
           url: validate,
+          beforeSend: function(){
+            events.hideAllInputTolltips($form);
+          }
         }).done(function( result, textStatus, jqXHR ) {
           if(result){
             result.forEach(function(item){
@@ -411,6 +412,7 @@
                   // performs the action
                   let act = methods.actionForm($form, data, action, 'post');
                   act.then((result) => {
+                    console.log("result: ", result);
                     // next slide
                     $(event.target).closest(".slide").find(".next").click()
                   })
@@ -433,17 +435,23 @@
     inputTooltip: function($form, item_name, item_value){
       let $input_name = $form.find('[name="' + item_name + '"]');
       $input_name.after('<div class="input_tooltip"><div class="message">' + item_value + '</div><div class="close">x</div></div>');
-      events.startInputTooltip($input_name);
+      events.showInputTooltip($input_name);
     },
-    startInputTooltip: function($input_name){
+    showInputTooltip: function($input_name){
       $input_name.on({
         focus: function(event){
           $(this).parent().find('.close').click();
         }
       });
-      $input_name.parent().find('.input_tooltip .close').click(function(event){
-        $(this).parent().remove();
+      $input_name.parent().find('.input_tooltip').click(function(event){
+        events.hideinputTooltip($(this));
       });
+    },
+    hideinputTooltip: function($el){
+      $el.remove();
+    },
+    hideAllInputTolltips: function($form){
+      $form.find('.input_tooltip').remove();
     },
     startSlide: function($element, card){
       let data = card["slide"].data;
